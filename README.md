@@ -1,13 +1,10 @@
-# AcmeBase
+# Acme Upload
 
-A base implementation of a Solid App with login using svelte
+A Solid app that can be used as a dropzone for a container
 
 # Usage
 
 ```
-npx degit phochste/AcmeBase my-solid-app
-
-cd my-svelte-project
 npm install
 npm run dev
 ```
