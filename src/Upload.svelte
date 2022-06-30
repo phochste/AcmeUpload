@@ -12,12 +12,17 @@
     export let isPublic : boolean = true;
     export let isOverwrite : boolean = true;
     export let container : string = "";
+    export let profile;
 
     let files = {
       accepted: [],
       rejected: [],
       failed: [],
     };
+
+    if (! profile) {
+        isOverwrite = false;
+    }
 
     async function handlePermissions(resource,access) {
         let acl : ACLType;
@@ -133,8 +138,10 @@
 
 <p>
     Container: <input type="text" size="80" on:change={handleContainer} value={container}/>
+    {#if profile}
     Public?: <input type="checkbox" bind:checked={isPublic}/>
     Overwrite?: <input type="checkbox" bind:checked={isOverwrite}/>
+    {/if}
 </p>
 
 {#if container}

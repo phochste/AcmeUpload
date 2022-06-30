@@ -41,6 +41,4 @@
 
 <Login bind:profile={profile}/>
 
-{#if profile}
-	<Upload {container}/>
-{/if}
+<Upload {profile} {container}/>
