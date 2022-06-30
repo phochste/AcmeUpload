@@ -31,6 +31,16 @@ export type ACLType = {
     control: boolean
 };
 
+export async function getPublicAcl(resource: string) : Promise<ACLType | null> {
+   const acls = await getAcl(resource);
+
+   if (! acls) {
+      return null;
+   }
+
+   return acls.find( e => e.agent === '#public');
+}
+
 export async function getAcl(resource: string) : Promise<ACLType[] | null> {
    return getWACACL(resource);
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
     import Dropzone from "svelte-file-dropzone";
-    import { setAcl, type ACLType } from "./acl";
+    import { setAcl , getPublicAcl , type ACLType } from "./acl";
     import { fetch } from '@inrupt/solid-client-authn-browser';
     import { 
         overwriteFile, 
@@ -91,13 +91,16 @@
                     console.log(`setting permissions to ${isPublic ? "public" : "private"}`);
                     handlePermissions(resource,isPublic ? "public" : "private");
 
+                    let url = getSourceUrl(savedFile);
+                    let acl = await getPublicAcl(url);
+
                     files.accepted = files.accepted.concat({
                         file: file ,
                         name: file.name ,
-                        url: getSourceUrl(savedFile),
+                        url: url,
                         contentType: getContentType(savedFile),
                         time: (new Date()).toISOString() ,
-                        public: isPublic
+                        public: acl?.read 
                     });
                 }
                 catch (e) {
@@ -150,7 +153,12 @@
     <p>Uploaded:</p>
     <ol>
         {#each files.accepted as item}
-          <li>{item.time} <a href="{item.url}">{item.url}</a> - <i>{item.public ? "public" : "private"}</i></li>
+          <li>
+            {item.time} <a href="{item.url}">{item.url}</a> 
+            {#if item.public != null}
+            - <i>{item.public ? "public" : "private"}</i>
+            {/if}
+           </li>
         {/each}
     </ol>
 {/if}
