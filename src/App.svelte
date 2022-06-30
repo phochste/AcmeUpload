@@ -8,6 +8,8 @@
 
 	let profile: any;
 	let container: string;
+	let isPublic: boolean = true;
+	let isOverwrite: boolean = true;
 
 	$: if (! profile) {
 		setResource(window.location.href);
@@ -26,8 +28,13 @@
             console.log(`resource: ${newResource}`);
             container = newResource;
         }
-	}
 
+		const overwrite = urlParams.get('overwrite');
+
+		if (overwrite) {
+			isOverwrite = overwrite === 'true' ? true : false;
+		}
+	}
 </script>
 
 <nav class="navbar navbar-default">
@@ -45,4 +52,4 @@
 
 <Login bind:profile={profile}/>
 
-<Upload {profile} {container}/>
+<Upload {profile} {container} {isPublic} {isOverwrite}/>

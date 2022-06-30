@@ -1,6 +1,6 @@
 <script lang="ts">
     import Dropzone from "svelte-file-dropzone";
-    import { setAcl , getPublicAcl , type ACLType } from "./acl";
+    import { getAcl, setAcl , type ACLType } from "./acl";
     import { fetch } from '@inrupt/solid-client-authn-browser';
     import { 
         overwriteFile, 
@@ -11,6 +11,7 @@
 
     export let isPublic : boolean = true;
     export let isOverwrite : boolean = true;
+    export let isOwner : boolean = false;
     export let container : string = "";
     export let profile;
 
@@ -19,6 +20,26 @@
       rejected: [],
       failed: [],
     };
+
+    $: if (container) {
+        handleCheckOwner(container); 
+    }
+
+    console.log(`public?: ${isPublic} ; overwrite?: ${isOverwrite}`);
+
+    async function handleCheckOwner(resource) {
+        // You are the owner when you can read acls...
+        const acls = await getAcl(resource);
+        
+        if (acls) {
+            console.log(`You are the controller of ${container}`);
+            isOwner = true;
+        }
+        else {
+            console.log(`You are not a controller of ${container}`);
+            isOwner = false;
+        }
+    } 
 
     async function handlePermissions(resource,access) {
         let acl : ACLType;
@@ -92,8 +113,9 @@
                     console.log(`setting permissions to ${isPublic ? "public" : "private"}`);
                     handlePermissions(resource,isPublic ? "public" : "private");
 
-                    let url = getSourceUrl(savedFile);
-                    let acl = await getPublicAcl(url);
+                    let url  = getSourceUrl(savedFile);
+                    let acls = await getAcl(url);
+                    let acl = acls?.find(a => a.agent === '#public');
 
                     files.accepted = files.accepted.concat({
                         file: file ,
@@ -124,19 +146,53 @@
 
 		if (value.endsWith('/')) {
 			container = value;
-            history.pushState({},undefined, location.protocol + '//' + location.host + location.pathname + '?resource=' + container);
+            updateUrl();
 		}
 		else {
 			alert(`${value} doesn't look like a container`);
 		}
 	}
+
+    function handlePublic() {
+        isPublic = ! isPublic;
+        updateUrl();
+    }
+
+    function handleOverwrite() {
+        isOverwrite = ! isOverwrite ;
+        updateUrl();
+    }
+
+    function updateUrl() {
+        console.log('updating url...');
+        const baseUrl = 
+                location.protocol + 
+                '//' + 
+                location.host + 
+                ( location.pathname ? location.pathname : "");
+
+        history.pushState(
+                {},
+                undefined, 
+                baseUrl + '?' + 
+                'resource=' + encodeURI(container) + '&' +
+                'overwrite=' + encodeURI(isOverwrite.toString())
+        );
+    }
 </script>
 
 <p>
     Container: <input type="text" size="80" on:change={handleContainer} value={container}/>
-    {#if profile}
-    Public?: <input type="checkbox" bind:checked={isPublic}/>
-    Overwrite?: <input type="checkbox" bind:checked={isOverwrite}/>
+    {#if isOwner}
+    Public?: 
+        <input type="checkbox" 
+                on:change={handlePublic}
+                checked={isPublic}/>
+    Overwrite?: 
+        <input type="checkbox" 
+                name="isOverwrite"
+                on:change={handleOverwrite}
+                checked={isOverwrite}/>
     {/if}
 </p>
 
