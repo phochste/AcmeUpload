@@ -110,8 +110,10 @@
             
                     console.log(`uploaded ${file.name} as ${file.type}`);
 
-                    console.log(`setting permissions to ${isPublic ? "public" : "private"}`);
-                    handlePermissions(resource,isPublic ? "public" : "private");
+                    if (isOwner) {
+                        console.log(`setting permissions to ${isPublic ? "public" : "private"}`);
+                        handlePermissions(resource,isPublic ? "public" : "private");
+                    }
 
                     let url  = getSourceUrl(savedFile);
                     let acls = await getAcl(url);
