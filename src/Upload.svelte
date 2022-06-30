@@ -13,7 +13,6 @@
     export let isOverwrite : boolean = true;
     export let isOwner : boolean = false;
     export let container : string = "";
-    export let profile;
 
     let files = {
       accepted: [],
