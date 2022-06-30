@@ -9,6 +9,10 @@
 	let profile: any;
 	let container: string;
 
+	$: if (! profile) {
+		setResource(window.location.href);
+	}
+	
 	onSessionRestore( (url) => setResource(url) );
 
 	function setResource(url: string) {

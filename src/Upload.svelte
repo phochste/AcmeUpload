@@ -20,10 +20,6 @@
       failed: [],
     };
 
-    if (! profile) {
-        isOverwrite = false;
-    }
-
     async function handlePermissions(resource,access) {
         let acl : ACLType;
 
