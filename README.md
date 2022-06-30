@@ -11,6 +11,8 @@ npm run dev
 
 # Usage
 
+![Logged In](https://acmeupload.patrickhochstenbach.net/images/logged_in.png)
+
 ### Logged in pod controller
 
 A logged in user can upload files to any Solid container under its control.
