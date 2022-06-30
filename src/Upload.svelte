@@ -1,10 +1,16 @@
 <script lang="ts">
     import Dropzone from "svelte-file-dropzone";
     import { setAcl, type ACLType } from "./acl";
-    import { fetch , onSessionRestore } from '@inrupt/solid-client-authn-browser';
-    import { overwriteFile } from '@inrupt/solid-client';
+    import { fetch } from '@inrupt/solid-client-authn-browser';
+    import { 
+        overwriteFile, 
+        saveFileInContainer, 
+        getSourceUrl, 
+        getContentType
+    } from '@inrupt/solid-client';
 
-    export let isPublic : boolean = false;
+    export let isPublic : boolean = true;
+    export let isOverwrite : boolean = true;
     export let container : string = "";
 
     let files = {
@@ -63,11 +69,22 @@
 
                     console.log(`overwriting ${resource}`);
 
-                    const savedFile = await overwriteFile(
-                        resource,
-                        file ,
-                        { contentType: file.type, fetch: fetch }
-                    );
+                    let savedFile;
+
+                    if (isOverwrite) {
+                        savedFile = await overwriteFile(
+                            resource,
+                            file ,
+                            { contentType: file.type, fetch: fetch }
+                        );
+                    }
+                    else {
+                        savedFile = await saveFileInContainer(
+                            container,
+                            file,
+                            { contentType: file.type, fetch: fetch }
+                        );
+                    }
             
                     console.log(`uploaded ${file.name} as ${file.type}`);
 
@@ -77,7 +94,8 @@
                     files.accepted = files.accepted.concat({
                         file: file ,
                         name: file.name ,
-                        url: resource ,
+                        url: getSourceUrl(savedFile),
+                        contentType: getContentType(savedFile),
                         time: (new Date()).toISOString() ,
                         public: isPublic
                     });
@@ -113,6 +131,7 @@
 <p>
     Container: <input type="text" size="80" on:change={handleContainer} value={container}/>
     Public?: <input type="checkbox" bind:checked={isPublic}/>
+    Overwrite?: <input type="checkbox" bind:checked={isOverwrite}/>
 </p>
 
 {#if container}
