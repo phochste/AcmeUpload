@@ -14,6 +14,7 @@
     export let isOverwrite : boolean = true;
     export let isOwner : boolean = false;
     export let container : string = "";
+    export let profile;
 
     let files = {
         accepted: [],
@@ -22,8 +23,13 @@
     };
 
     $: if (container) {
-        handleCheckOwner(container); 
-        updateUrl();
+        if (profile) {
+            handleCheckOwner(container); 
+            updateUrl();
+        }
+        else {
+            isOwner = false;
+        }
     }
     else {
         isOwner = false;
@@ -154,6 +160,7 @@
 
 		if (value.endsWith('/')) {
 			container = value;
+            updateUrl();
 		}
 		else {
 			alert(`${value} doesn't look like a container`);
