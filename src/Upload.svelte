@@ -8,6 +8,7 @@
         getSourceUrl, 
         getContentType
     } from '@inrupt/solid-client';
+    import { lastUpdate } from './stores';
 
     export let isPublic : boolean = true;
     export let isOverwrite : boolean = true;
@@ -15,13 +16,14 @@
     export let container : string = "";
 
     let files = {
-      accepted: [],
-      rejected: [],
-      failed: [],
+        accepted: [],
+        rejected: [],
+        failed: [],
     };
 
     $: if (container) {
         handleCheckOwner(container); 
+        updateUrl();
     }
     else {
         isOwner = false;
@@ -109,8 +111,10 @@
                             { contentType: file.type, fetch: fetch }
                         );
                     }
-            
+
                     console.log(`uploaded ${file.name} as ${file.type}`);
+
+                    lastUpdate.update( () => { return savedFile } );
 
                     if (isOwner) {
                         console.log(`setting permissions to ${isPublic ? "public" : "private"}`);
@@ -150,7 +154,6 @@
 
 		if (value.endsWith('/')) {
 			container = value;
-            updateUrl();
 		}
 		else {
 			alert(`${value} doesn't look like a container`);
@@ -186,7 +189,9 @@
 </script>
 
 <p>
-    Container: <input type="text" size="80" on:change={handleContainer} value={container}/>
+    <input type="text" size="100" on:change={handleContainer} value={container}/>
+</p>
+<p>
     {#if isOwner}
     Public?: 
         <input type="checkbox" 

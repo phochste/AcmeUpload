@@ -2,6 +2,7 @@
 	import Login from './Login.svelte';
 	import Logout from './Logout.svelte';
 	import Upload from './Upload.svelte';
+	import Container from './Container.svelte';
 	import { onSessionRestore , onLogout } from '@inrupt/solid-client-authn-browser';
 
 	export let name: string;
@@ -11,10 +12,7 @@
 	let isPublic: boolean = true;
 	let isOverwrite: boolean = true;
 
-	$: if (profile) {
-		container = profile.storage ? profile.storage : "";
-	}
-	else {
+	$: if (!profile) {
 		setResource(window.location.href);
 	}
 	
@@ -62,4 +60,15 @@
 
 <Login bind:profile={profile}/>
 
-<Upload {profile} {container} {isPublic} {isOverwrite}/>
+<main>
+<div class="row">
+  <div class="col-sm-4">
+    <Container bind:resource={container}/>
+  </div>
+  <div class="col-sm-8">
+    <Upload {profile} {isPublic} {isOverwrite}
+		bind:container={container} 
+	/>
+  </div>
+</div>
+</main>
