@@ -7,13 +7,39 @@ export type FileInfo = {
     isDir?: boolean ,
 };
 
+export function watchContainer(url: string, callback: (string) => void) : WebSocket {
+    let socket;
+    try {
+        const websocket = 'wss://' + url.split('/')[2];
+        socket = new WebSocket(websocket, ['solid-0.1']);
+        socket.onopen = function() {
+            console.log(`${websocket} open ${url}`);
+            console.log(`${websocket} sub ${url}`);
+            this.send(`sub ${url}`);
+        }
+        socket.onmessage = function(msg) {
+            if (msg.data && msg.data.slice(0,3) === 'pub') {
+                console.log(`ws> ${msg.data}`);
+                callback(msg.data);
+            }
+        }
+        socket.onerror = function(e) {
+            console.error(`${websocket} error ${url} %O`, e);
+        }
+        socket.onclose = function() {
+            console.log(`${websocket} closed ${url}`);
+        }
+    }
+    catch (e) {
+        console.error(`watchContainer(${url})`);
+        console.error(e);
+    }
+    return socket;   
+}
+
 export async function getContainerList(url: string) : Promise<FileInfo[] | undefined> {
     let containerDataset = null;
 
-    if (! url) {
-        return undefined;
-    }
-    
     try {
         let files : FileInfo[] = [];
         containerDataset = await getSolidDataset(url, { fetch: fetch });

@@ -90,8 +90,6 @@ async function getWACACL(resource: string) : Promise<ACLType[] | null> {
       return null;
    }
 
-   console.log(acls);
-
    return acls;
 }
 

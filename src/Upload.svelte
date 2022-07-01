@@ -8,7 +8,6 @@
         getSourceUrl, 
         getContentType
     } from '@inrupt/solid-client';
-    import { lastUpdate } from './stores';
 
     export let isPublic : boolean = true;
     export let isOverwrite : boolean = true;
@@ -119,8 +118,6 @@
                     }
 
                     console.log(`uploaded ${file.name} as ${file.type}`);
-
-                    lastUpdate.update( () => { return savedFile } );
 
                     if (isOwner) {
                         console.log(`setting permissions to ${isPublic ? "public" : "private"}`);

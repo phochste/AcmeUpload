@@ -1,17 +1,13 @@
 <script lang="ts">
-    import { getContainerList, type FileInfo } from './container';
-    import { lastUpdate } from './stores';
+    import { getContainerList , watchContainer , type FileInfo } from './container';
 
     export let resource : string = "";
 
     let containerStack : string[] = [ ];
     let list : FileInfo[] = [];
+    let socket : WebSocket;
 
     $: changeContainer({ url: resource });
-
-    lastUpdate.subscribe( file => {
-        reloadContainer();
-    });
 
     async function reloadContainer() {
         console.log(`reload ${resource}`);
@@ -40,6 +36,12 @@
             else {
                 resource = container.url;
                 list = next;
+
+                if (socket) socket.close();
+                socket = watchContainer(resource, () => {
+                    console.log(`${resource} update`);
+                    reloadContainer();
+                });
             }
         }
         else {
@@ -52,10 +54,14 @@
             else {
                 resource = url;
                 list = next;
+
+                if (socket) socket.close();
+                socket = watchContainer(resource, () => {
+                    console.log(`${resource} update`);
+                    reloadContainer();
+                });
             }
         }
-
-        console.log(containerStack);
     }
 
 </script>
