@@ -35,7 +35,8 @@ export type ProfileType = {
     givenName: string | undefined,
     familyName: string | undefined,
     name: string | undefined,
-    image: string | undefined
+    image: string | undefined,
+    storage: string | undefined
 };
 
 export async function fetchUserProfile(webId: string) : Promise<ProfileType> {
@@ -48,6 +49,8 @@ export async function fetchUserProfile(webId: string) : Promise<ProfileType> {
           = profileQuads.find(quad => quad.predicate.value === 'http://xmlns.com/foaf/0.1/name');
     const imageQuad 
           = profileQuads.find(quad => quad.predicate.value === 'http://xmlns.com/foaf/0.1/img');
+    const storageQuad
+          = profileQuads.find(quad => quad.predicate.value === 'http://www.w3.org/ns/pim/space#storage');
 
     return {
         webId: webId ,
@@ -55,5 +58,6 @@ export async function fetchUserProfile(webId: string) : Promise<ProfileType> {
         familyName: familyNameQuad?.object.value ,
         name:  nameQuad?.object.value ,
         image: imageQuad?.object.value,
+        storage: storageQuad?.object.value
     };
 }

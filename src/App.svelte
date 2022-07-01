@@ -11,7 +11,10 @@
 	let isPublic: boolean = true;
 	let isOverwrite: boolean = true;
 
-	$: if (! profile) {
+	$: if (profile) {
+		container = profile.storage ? profile.storage : "";
+	}
+	else {
 		setResource(window.location.href);
 	}
 	
