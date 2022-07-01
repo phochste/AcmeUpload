@@ -38,6 +38,13 @@
 			isOverwrite = overwrite === 'true' ? true : false;
 		}
 	}
+
+	function handleLogout() {
+		console.log(`logout`);
+		container = "";
+		isPublic = true;
+		isOverwrite = true;
+	}
 </script>
 
 <nav class="navbar navbar-default">
@@ -47,7 +54,7 @@
 	  </div>
 	  <ul class="nav navbar-nav">
 		<li>
-			<Logout bind:profile={profile}/>
+			<Logout bind:profile={profile} on:logout={handleLogout}/>
 		</li>
 	  </ul>
 	</div>

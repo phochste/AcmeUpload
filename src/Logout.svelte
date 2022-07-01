@@ -1,11 +1,17 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
     import { logout } from '@inrupt/solid-client-authn-browser';
     export let profile: any;
 
+    const dispatch = createEventDispatcher();
+
     function handleLogout() {
         console.log(`Logout : ${profile.webId}`);
+        
         logout();
         profile = undefined;
+
+        dispatch('logout', { });
     }
 </script>
 

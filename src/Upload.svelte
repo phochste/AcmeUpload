@@ -23,6 +23,9 @@
     $: if (container) {
         handleCheckOwner(container); 
     }
+    else {
+        isOwner = false;
+    }
 
     console.log(`public?: ${isPublic} ; overwrite?: ${isOverwrite}`);
 
