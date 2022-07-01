@@ -2,7 +2,7 @@
 	import Login from './Login.svelte';
 	import Logout from './Logout.svelte';
 	import Upload from './Upload.svelte';
-	import { onSessionRestore } from '@inrupt/solid-client-authn-browser';
+	import { onSessionRestore , onLogout } from '@inrupt/solid-client-authn-browser';
 
 	export let name: string;
 
@@ -19,6 +19,7 @@
 	}
 	
 	onSessionRestore( (url) => setResource(url) );
+	onLogout( () => handleLogout() );
 
 	function setResource(url: string) {
         let queryString = url.replace(/.*\?/,'');
@@ -40,7 +41,6 @@
 	}
 
 	function handleLogout() {
-		console.log(`logout`);
 		container = "";
 		isPublic = true;
 		isOverwrite = true;
@@ -54,7 +54,7 @@
 	  </div>
 	  <ul class="nav navbar-nav">
 		<li>
-			<Logout bind:profile={profile} on:logout={handleLogout}/>
+			<Logout bind:profile={profile}/>
 		</li>
 	  </ul>
 	</div>
