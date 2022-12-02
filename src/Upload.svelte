@@ -197,6 +197,11 @@
 </p>
 <p>
     {#if isOwner}
+    <b>Owner privileges</b>:<br>
+    Do you want the new uploads to be <i>public</i> available? Do you want to <i>overwrite</i>
+    existing files, or let the Solid server generate a new file name for the upload (usually a 
+    hexadecimal string).
+    <p>
     Public?: 
         <input type="checkbox" 
                 on:change={handlePublic}
@@ -206,6 +211,7 @@
                 name="isOverwrite"
                 on:change={handleOverwrite}
                 checked={isOverwrite}/>
+    </p>
     {/if}
 </p>
 
