@@ -101,16 +101,16 @@
 	}
 
     .file {
-        background-image: url(/images/file.svg);
+        background-image: url(./images/file.svg);
     }
 
     .dir {
-		background-image: url(/images/folder.svg);
+		background-image: url(./images/folder.svg);
         font-weight: bold;
 	}
 
     .dir_open {
-		background-image: url(/images/folder-open.svg);
+		background-image: url(./images/folder-open.svg);
         font-weight: bold;
     }
 
