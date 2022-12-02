@@ -8,6 +8,8 @@ export type FileInfo = {
 };
 
 export function watchContainer(url: string, callback: (string) => void) : WebSocket {
+    console.log(`watchContainerList(${url})`);
+
     let socket;
     try {
         const websocket = 'wss://' + url.split('/')[2];
@@ -38,6 +40,12 @@ export function watchContainer(url: string, callback: (string) => void) : WebSoc
 }
 
 export async function getContainerList(url: string) : Promise<FileInfo[] | undefined> {
+    console.log(`getContainerList(${url})`);
+
+    if (! url) {
+        return undefined;
+    }
+    
     let containerDataset = null;
 
     try {

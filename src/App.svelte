@@ -12,8 +12,18 @@
 	let isPublic: boolean = true;
 	let isOverwrite: boolean = true;
 
-	$: if (!profile) {
-		setResource(window.location.href);
+	$: if (profile) {
+		if (!container) {
+			if (window.location.href.includes('resource=http')) {
+				setResource(window.location.href);
+			}
+			else if (profile.storage) {
+				container = profile.storage;
+			}
+			else {
+				// Nothing set..
+			}
+		}
 	}
 	
 	onSessionRestore( (url) => setResource(url) );
@@ -30,6 +40,10 @@
             console.log(`resource: ${newResource}`);
             container = newResource;
         }
+
+		if (! container) {
+			console.log(`oops no container set`);
+		}
 
 		const overwrite = urlParams.get('overwrite');
 
